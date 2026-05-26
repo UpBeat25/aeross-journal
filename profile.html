@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" href="main.css">
+
+<style>
+    body {
+        padding: 30px;
+    }
+    #profile {
+        background-color: white;
+        padding: 40px;
+    }
+    
+    .paper-card {
+        background-color: white;
+        padding: 40px;
+    }
+
+    .paper-title {
+        font-size: 3rem;
+    }
+
+    a {
+        color: var(--red);
+    }
+
+    .abstract {
+        text-align: justify;
+    }
+    #logout {
+        width: 100px;
+        height: 40px;
+        color: white;
+        cursor: pointer;
+        background-color: var(--red);
+    }
+</style>
+</head>
+
+<body>
+
+<div id="profile"></div>
+<br></br>
+<div id="papers"></div>
+
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+
+<script src="main.js"></script>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const id = params.get("id");
+const user_c = pb.authStore.model;
+async function loadProfile() {
+
+    try {
+
+        // Get user
+        const user =
+            await pb.collection("users")
+            .getOne(id);
+
+        // Render profile
+        document.getElementById("profile")
+            .innerHTML = `
+
+                <h1 id="name">${user.name}</h1>
+                <p id="institute"><b>Institute:</b> ${user.institution || ""}</p>
+                ${
+                    pb.authStore.isValid
+                    ? `
+                        <p id="email">
+                            <b>Email:</b>
+                            ${user.email || ""}
+                        </p>
+                    `
+                    : ""
+                }
+                <p id="orcid"><b>ORCID:</b> <a href="${user.orcid}">${user.orcid || ""}</a></p>
+                <p id="dob"><b>Date of Birth:</b> ${user.birthdate
+                    ? user.birthdate.split(" ")[0]
+                    : ""}</p>
+
+                ${
+                    user_c.id === user.id
+                    ? `
+                        <button onclick="logout()" id="logout">Logout</button>
+                    `
+                    : ""
+                }
+            `;
+
+        // Get papers where this user is an author
+        const papers =
+            await pb.collection("papers")
+            .getFullList({
+
+                filter: `authors ~ "${id}"`,
+
+                expand: "authors",
+
+                sort: "-created"
+            });
+
+        const papersContainer =
+            document.getElementById("papers");
+
+        papersContainer.innerHTML = "";
+
+        papers.forEach(paper => {
+
+            // Build author links
+            let authorsHTML = "";
+
+            if (paper.expand?.authors) {
+
+                paper.expand.authors.forEach(author => {
+
+                    authorsHTML += `
+                        <a href="profile.html?id=${author.id}">
+                            ${author.name}
+                        </a>
+                    `;
+                });
+            }
+
+            // PocketBase file URL
+            const pdfUrl =
+                pb.files.getURL(
+                    paper,
+                    paper.file
+                );
+
+            papersContainer.innerHTML += `
+                <a class="paper-link" href="paper.html?id=${paper.id}">
+                    <div class="paper-card">
+
+                        <h2>${paper.title}</h2>
+
+                        <div class="authors">
+                            ${authorsHTML}
+                        </div>
+
+                        <p class="abstract"><b>Abstract:</b> ${paper.abstract || ""}</p>
+
+                        <p><b>Field:</b> ${paper.field || ""}</p>
+
+                    </div>
+                </a>
+            `;
+        });
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        document.body.innerHTML += `
+            <p>Error loading profile.</p>
+        `;
+    }
+}
+
+loadProfile();
+
+function logout() {
+    pb.authStore.clear();
+    window.location.href = "/login.html";
+}
+</script>
+
+</body>
+</html>

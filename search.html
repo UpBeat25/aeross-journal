@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Search Papers</title>
+
+    <link rel="stylesheet" href="main.css">
+<style>
+    body {
+        margin: 40px;
+    }
+    
+    #categoryTitle {
+        font-size: 2.5rem;
+        color: rgb(255, 255, 255);
+    }
+
+    .paper-card {
+        background-color: white;
+        color:var(--red);
+        border: 2px black solid;
+        padding: 20px;
+    }
+
+    .abstract {
+        text-align: justify;
+    }
+    .paper-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .paper-link:hover .paper-card {
+        transform: translateY(-2px);
+        transition: 0.2s;
+    }
+
+    a {
+        color: var(--red)
+    }
+    .content-container {
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .search-area,
+    #results {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    .paper-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .choose-genre {
+        display: flex;
+        align-items: center;
+        input {
+            height: 50px;
+        }
+        position: relative;
+        column-gap: 50px;
+    }
+
+    .suggestions {
+        align-self: center;
+        background: white;
+        border: 1px solid #ccc;
+        position: absolute;
+        z-index: 1000;
+        width: 100%; /* Add this so it matches the input width */
+        top: 100%;   /* Add this to place it just below the input */
+        left: 0;     /* Add this to align it to the left of the input */
+    }
+
+    .suggestion-item {
+        padding: 10px;
+        cursor: pointer;
+        color: black;
+    }
+
+    .suggestion-item:hover {
+        background: #f0f0f0;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="content-container">
+    
+    <div class="choose-genre">
+        <h1 id="categoryTitle"></h1>
+        <div style="position: relative; flex: 1;">
+            <input type="text" id="searchBox_c" placeholder="Search subjects..." autocomplete="off">
+            <div class="suggestions" id="suggestions"></div>
+        </div>
+    </div>
+    <div class="search-area">
+        <input
+            type="text"
+            id="searchBox"
+            placeholder="Search papers..."
+        >
+    </div>
+    <br>
+    <div id="results"></div>
+
+</div>
+
+<div id="results"></div>
+
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+
+<script src="main.js"></script>
+
+<script>
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const category =
+    params.get("sub") || "";
+
+document.getElementById("categoryTitle")
+    .textContent =
+    `${category}`;
+
+const searchBox =
+    document.getElementById("searchBox");
+
+let allPapers = [];
+
+async function loadPapers() {
+
+    try {
+
+        // Get papers from PocketBase
+        const papers =
+            await pb.collection("papers")
+            .getFullList({
+
+                filter:
+                    `field ~ "${category}" && accepted = true`,
+
+                expand: "authors",
+
+                sort: "-created"
+            });
+
+        allPapers = papers;
+
+        renderPapers(papers);
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        document.getElementById("results")
+            .innerHTML =
+            "<p>Failed to load papers.</p>";
+    }
+}
+
+function renderPapers(papers) {
+
+    const container =
+        document.getElementById("results");
+
+    container.innerHTML = "";
+
+    if (papers.length === 0) {
+
+        container.innerHTML =
+            "<p>No papers found.</p>";
+
+        return;
+    }
+
+    papers.forEach(paper => {
+
+        let authorsHTML = "";
+
+        if (paper.expand?.authors) {
+
+            paper.expand.authors.forEach(author => {
+
+                authorsHTML += `
+                    <a href="profile.html?id=${author.id}">
+                        ${author.name}
+                    </a>
+                `;
+            });
+        }
+
+        container.innerHTML += `
+            <a class="paper-link" href="paper.html?id=${paper.id}">
+                <div class="paper-card">
+
+                    <h2 class="paper-title">${paper.title}</h2>
+
+                    <div class="authors">
+                        ${authorsHTML}
+                    </div>
+
+                    <p class="abstract">${paper.abstract || ""}</p>
+
+                    <p class="field">
+                        <strong>Field:</strong>
+                        ${paper.field}
+                    </p>
+
+                </div>
+            </a>
+        `;
+    });
+}
+
+// Live search inside category
+searchBox.addEventListener("input", () => {
+
+    const value =
+        searchBox.value.toLowerCase();
+
+    const filtered =
+        allPapers.filter(paper => {
+
+            return (
+
+                paper.title
+                    .toLowerCase()
+                    .includes(value)
+
+                ||
+
+                (paper.abstract || "")
+                    .toLowerCase()
+                    .includes(value)
+            );
+        });
+
+    renderPapers(filtered);
+});
+
+loadPapers();
+
+searchBox_c.addEventListener("input", () => {
+
+    const value =
+        searchBox_c.value.toLowerCase();
+
+    suggestions.innerHTML = "";
+
+    if (value === "") return;
+
+    const matches = options.filter(item =>
+        item.toLowerCase().includes(value)
+    );
+
+    matches.forEach(match => {
+
+        const div =
+            document.createElement("div");
+
+        div.classList.add("suggestion-item");
+
+        div.textContent = match;
+
+        div.addEventListener("click", () => {
+
+            window.location.href =
+                `/search.html?sub=${encodeURIComponent(match)}`;
+        });
+
+        suggestions.appendChild(div);
+    });
+});
+</script>
+
+</body>
+
+</html>

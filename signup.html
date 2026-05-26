@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="main.css">
+<style>
+    body {
+        padding: 40px;
+    }
+    .form-container {
+        background-color: white;
+        padding: 30px;
+    }
+    input {
+        width: 250px;
+        height: 30px;
+        margin-bottom: 30px;
+    }
+    button {
+        width: 250px;
+        height: 35px; 
+        background-color: var(--red);
+        color: white;
+        cursor: pointer;
+    }
+
+    a {
+        color: var(--red);
+    }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+
+    <h1>Create Account</h1>
+
+    <form id="signupForm">
+
+        <input type="text" name="name" placeholder="Name" required>
+        <br>
+        <input type="email" name="email" placeholder="Email" required>
+        <br>
+        <input type="password" name="password" placeholder="Password" required>
+        <br>
+        <!-- Birthdate Field -->
+        <input type="date" name="birthdate" required>
+        <br>
+        <input type="text" name="institution" placeholder="Institution">
+        <br>
+        <input type="text" name="orcid" placeholder="ORCID">
+        <br>
+        <button type="submit">Create Account</button>
+
+    </form>
+    <br>
+    <span>Have an account? <a href="/login.html">Login</a></span>
+</div>
+
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+<script src="main.js"></script>
+
+<script>
+const form = document.getElementById("signupForm");
+
+form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    try {
+
+        await pb.collection("users").create({
+
+            email: form.email.value,
+
+            password: form.password.value,
+
+            passwordConfirm: form.password.value,
+
+            name: form.name.value,
+
+            birthdate: form.birthdate.value,
+
+            institution: form.institution.value,
+
+            orcid: form.orcid.value
+        });
+
+        await pb.collection("users")
+            .authWithPassword(
+                form.email.value,
+                form.password.value
+            );
+
+        window.location.href = "index.html";
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        alert(err.message);
+    }
+});
+</script>
+
+</body>
+</html>

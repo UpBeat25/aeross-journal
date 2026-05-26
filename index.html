@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Aeross Journal</title>
+    <link rel='stylesheet' href='main.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="nav-bar">
+        <span class="hero-title" href="/index.html">Aeross Journal</span>
+        <div class="btn-cont">
+            <button class="search-btn"><span>About</span></button>
+            <button class="search-btn"><span>Publish</span></button>
+            <button class="search-btn" onclick="profile()"><span>Profile</span></button>
+        </div>
+    </div>
+    
+    <article class="art-week" id="art-week">
+        <div class="art-content">
+            <span class="title week-art">Article Of The Week</span>
+
+            <span id="art-week-title">Understanding Black Holes and Space-Time</span>
+        </div>
+        <div class="art-image">
+            
+            <p id="art-week-desc">
+                Explore how gravity bends space-time, why black holes form,
+                and what modern astrophysics says about the universe.
+            </p>
+        </div>
+    </article>
+    
+    <article class="genre">
+        <span class="title">Choose Your Topic</span>
+        <div class="choose-genre">
+            <input type="text" id="searchBox" placeholder="Search subjects..." autocomplete="off">
+            <div class="suggestions" id="suggestions"></div>
+        </div>
+    </article>
+
+    <footer>
+<div class="footer">
+<div class="row">
+        <div class="img">
+            <img src="images/hijhik.png" id="light"/>
+            <img src="images/hijhik.png" id="dark"/>
+        </div>
+</div>
+
+<div class="row">
+<ul>
+<li><a href="#">Contact us</a></li>
+<li><a href="#">Publish With Us</a></li>
+<li><a href="#">Privacy Policy</a></li>
+<li><a href="#">Terms & Conditions</a></li>
+<li><a href="https://aeross.org">Website</a></li>
+</ul>
+</div>
+
+<div class="row">
+AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K. Puram
+</div>
+</div>
+</footer>
+    <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+    <script src="main.js"></script>
+    <script>
+        const art_week_desc = document.getElementById("art-week-desc");
+        const art_week_title = document.getElementById("art-week-title");
+        const articleId = "wlh8zxp8eg7tfz3";
+
+        async function loadArticleOfWeek() {
+
+            try {
+
+                const paper =
+                    await pb.collection("papers")
+                    .getOne(articleId, {
+
+                        expand: "authors"
+                    });
+
+                art_week_title.innerText =
+                    paper.title;
+
+                art_week_desc.innerText =
+                    paper.abstract || "";
+            }
+
+            catch(err) {
+
+                console.error(err);
+            }
+        }
+
+        loadArticleOfWeek();
+
+        const art_week = document.getElementById("art-week");
+        art_week.addEventListener("click", () => {
+            window.location.href =
+            `/paper.html?id=${articleId}`;
+        });
+        // Search options
+
+        const searchBox = document.getElementById("searchBox");
+        const suggestions = document.getElementById("suggestions");
+
+        searchBox.addEventListener("input", () => {
+
+            const value = searchBox.value.toLowerCase();
+
+            suggestions.innerHTML = "";
+
+            if (value === "") return;
+
+            const matches = options.filter(item =>
+                item.toLowerCase().includes(value)
+            );
+
+            matches.forEach(match => {
+
+                const div = document.createElement("div");
+
+                div.classList.add("suggestion-item");
+                div.textContent = match;
+
+                div.addEventListener("click", () => {
+
+                    // Redirect with query parameter
+                    window.location.href =
+                        `/search.html?sub=${encodeURIComponent(match)}`;
+
+                });
+
+                suggestions.appendChild(div);
+
+            });
+
+        });
+
+        async function profile() {
+            await pb.collection("users").authRefresh();
+            const user = pb.authStore.model;
+
+            if (!user) {
+
+                alert("You must be logged in");
+
+                window.location.href = "/login.html";
+                return;
+            }
+            window.location.href = `/profile.html?id=${user.id}`;
+        }
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

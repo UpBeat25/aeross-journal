@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Paper</title>
+
+    <link rel="stylesheet" href="main.css">
+<style>
+    :root {
+        --red: rgb(63, 0, 0);
+    }
+    body {
+        background-color: var(--red);
+        font-size: 1.25rem;
+        padding: 50px;
+    }
+
+    .paper-card {
+        background-color: white;
+        padding: 40px;
+    }
+
+    .paper-title {
+        font-size: 3rem;
+    }
+
+    a {
+        color: var(--red);
+    }
+
+    .abstract {
+        text-align: justify;
+    }
+    
+</style>
+</head>
+
+<body>
+
+<div id="paper"></div>
+
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+
+<script src="main.js"></script>
+
+<script>
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const id =
+    params.get("id");
+
+/* LOAD PAPER */
+
+async function loadPaper() {
+
+    try {
+
+        const paper =
+            await pb.collection("papers")
+            .getOne(id, {
+
+                expand: "authors"
+            });
+
+        console.log(paper);
+
+        let authorsHTML = "";
+
+        if (paper.expand?.authors) {
+
+            paper.expand.authors.forEach(author => {
+
+                authorsHTML += `
+
+                    <a href="profile.html?id=${author.id}">
+                        ${author.name}
+                    </a>
+
+                `;
+            });
+        }
+
+        const pdfUrl =
+            pb.files.getURL(
+                paper,
+                paper.file
+            );
+
+        document.title =
+            paper.title;
+
+        document.getElementById("paper")
+            .innerHTML = `
+
+                <div class="paper-card">
+
+                    <h1 class="paper-title">${paper.title}</h1>
+                    <b>Authors:</b>
+                    <div class="authors">
+                        ${authorsHTML}
+                    </div>
+
+                    <p class="abstract">
+                        <b>Abstract:</b>
+                        ${paper.abstract || ""}
+                    </p>
+                    <p class="field">
+                        <strong>Field:</strong>
+
+                        <a
+                            href="/search.html?sub=${encodeURIComponent(paper.field)}"
+                            class="field-link"
+                        >
+                            ${paper.field}
+                        </a>
+                    </p>
+                    <a
+                        href="${pdfUrl}"
+                        target="_blank"
+                        class="read"
+                    >
+                        Read PDF
+                    </a>
+
+                </div>
+            `;
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        document.getElementById("paper")
+            .innerHTML = `
+
+                <h2>Paper not found</h2>
+
+            `;
+    }
+}
+
+loadPaper();
+
+</script>
+
+</body>
+
+</html>
