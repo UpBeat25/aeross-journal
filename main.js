@@ -1,4 +1,4 @@
-const pb = new PocketBase("http://127.0.0.1:4173");
+const pb = new PocketBase("https://testing.helplink.dev");
 
 const options = [
     "Engineering",
