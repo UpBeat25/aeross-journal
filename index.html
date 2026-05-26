@@ -141,7 +141,6 @@ AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K.
         });
 
         async function profile() {
-            await pb.collection("users").authRefresh();
             const user = pb.authStore.model;
 
             if (!user) {
