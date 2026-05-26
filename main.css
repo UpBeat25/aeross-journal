@@ -97,6 +97,7 @@ body {
 .art-image p{
     text-align: justify;
     color: var(--red);
+    font-size: 0.9rem;
 }
 
 .art-content hr {
@@ -236,7 +237,7 @@ body {
 }
 
 #art-week-title {
-    font-size: 3.5rem;
+    font-size: 3.3rem;
     color: #000000;
 }
 
