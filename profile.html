@@ -96,7 +96,7 @@ async function loadProfile() {
                     `
                     : ""
                 }
-                <p id="orcid"><b>ORCID:</b> <a href="${user.orcid}">${user.orcid || ""}</a></p>
+                <p id="orcid"><b>ORCID:</b> <a href="https://orcid.org/${user.orcid}">${user.orcid || ""}</a></p>
                 <button onclick="navigator.clipboard.writeText('${user.id}')"><p><b>Aeross Journal ID:</b> ${user.id || ""}</p></button>
                 <p id="dob"><b>Date of Birth:</b> ${user.birthdate
                     ? user.birthdate.split(" ")[0]
