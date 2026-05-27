@@ -145,14 +145,11 @@
 
 /* CHECK AUTH */
 
+pb.collection("users").authRefresh();
 const user = pb.authStore.model;
 
 if (
-    !pb.authStore.isValid
-    ||
-    !user
-    ||
-    user.aeross !== true
+    !pb.authStore.isValid || !user || user.aeross != true
 ) {
 
     document.body.innerHTML = `
