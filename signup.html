@@ -50,7 +50,8 @@
         <br>
         <input type="text" name="institution" placeholder="Institution" required>
         <br>
-        <input type="text" name="orcid" placeholder="ORCID" required>
+        <input type="text" name="orcid" placeholder="ORCID (0000-0000-0000-0000)" pattern="^\d{4}-\d{4}-\d{4}-\d{4}$" required>
+        <p>Please ensure you include the hyphens while entering your ORCID</p>
         <br>
         <button type="submit">Create Account</button>
 
