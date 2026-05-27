@@ -11,7 +11,7 @@
     <div class="nav-bar">
         <span class="hero-title" href="/index.html">Aeross Journal</span>
         <div class="btn-cont">
-            <button class="search-btn"><span>About</span></button>
+            <button class="search-btn" onclick="about()"><span>About</span></button>
             <button class="search-btn" onclick="publish()"><span>Publish</span></button>
             <button class="search-btn" onclick="profile()"><span>Profile</span></button>
         </div>
@@ -152,6 +152,10 @@ AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K.
         }
 
         function publish(){
+            window.location.href = "/pwu.html"
+            return;
+        }
+        function about(){
             window.location.href = "/pwu.html"
             return;
         }
