@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Approval Panel</title>
+
+    <link rel="stylesheet" href="main.css">
+
+<style>
+
+    body {
+
+        background-color: var(--red);
+
+        margin: 40px;
+    }
+
+    #pageTitle {
+
+        color: white;
+
+        font-size: 3rem;
+
+        margin-bottom: 30px;
+    }
+
+    #results {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 20px;
+    }
+
+    .paper-card {
+
+        background-color: white;
+
+        padding: 30px;
+
+        border: 2px solid black;
+
+        color: var(--red);
+    }
+
+    .paper-title {
+
+        font-size: 2rem;
+
+        margin-bottom: 10px;
+    }
+
+    .authors {
+
+        margin-bottom: 20px;
+    }
+
+    .authors a {
+
+        color: var(--red);
+
+        margin-right: 10px;
+    }
+
+    .abstract {
+
+        text-align: justify;
+
+        line-height: 1.6;
+    }
+
+    .buttons {
+
+        display: flex;
+
+        gap: 10px;
+
+        margin-top: 20px;
+    }
+
+    button {
+
+        border: none;
+
+        padding: 12px 20px;
+
+        font-size: 1rem;
+
+        cursor: pointer;
+
+        color: white;
+    }
+
+    .approve-btn {
+
+        background-color: green;
+    }
+
+    .reject-btn {
+
+        background-color: darkred;
+    }
+
+    .pdf-btn {
+
+        background-color: black;
+
+        text-decoration: none;
+
+        padding: 12px 20px;
+
+        color: white;
+    }
+
+    .status {
+
+        color: white;
+
+        font-size: 1.2rem;
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<h1 id="pageTitle">
+    Pending Paper Approvals
+</h1>
+
+<div id="results"></div>
+
+<script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
+
+<script src="main.js"></script>
+
+<script>
+
+/* CHECK AUTH */
+
+const user = pb.authStore.model;
+
+if (
+    !pb.authStore.isValid
+    ||
+    !user
+    ||
+    user.aeross !== true
+) {
+
+    document.body.innerHTML = `
+
+        <h1 class="status">
+            Access Denied
+        </h1>
+
+    `;
+
+    throw new Error("Unauthorized");
+}
+
+/* LOAD PAPERS */
+
+async function loadPapers() {
+
+    try {
+
+        const papers =
+            await pb.collection("papers")
+            .getFullList({
+
+                filter: `accepted = false`,
+
+                expand: "authors",
+
+                sort: "-created"
+            });
+
+        renderPapers(papers);
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        document.getElementById("results")
+            .innerHTML = `
+
+                <p class="status">
+                    Failed to load papers.
+                </p>
+
+            `;
+    }
+}
+
+/* RENDER */
+
+function renderPapers(papers) {
+
+    const container =
+        document.getElementById("results");
+
+    container.innerHTML = "";
+
+    if (papers.length === 0) {
+
+        container.innerHTML = `
+
+            <p class="status">
+                No pending papers.
+            </p>
+
+        `;
+
+        return;
+    }
+
+    papers.forEach(paper => {
+
+        let authorsHTML = "";
+
+        if (paper.expand?.authors) {
+
+            paper.expand.authors.forEach(author => {
+
+                authorsHTML += `
+
+                    <a href="profile.html?id=${author.id}">
+                        ${author.name}
+                    </a>
+
+                `;
+            });
+        }
+
+        const pdfUrl =
+            pb.files.getURL(
+                paper,
+                paper.file
+            );
+
+        container.innerHTML += `
+
+            <div class="paper-card">
+
+                <h2 class="paper-title">
+                    ${paper.title}
+                </h2>
+
+                <div class="authors">
+                    ${authorsHTML}
+                </div>
+
+                <p class="abstract">
+                    <strong>Abstract:</strong>
+                    ${paper.abstract || ""}
+                </p>
+
+                <p>
+                    <strong>Field:</strong>
+                    ${paper.field}
+                </p>
+
+                <div class="buttons">
+
+                    <a
+                        class="pdf-btn"
+                        href="${pdfUrl}"
+                        target="_blank"
+                    >
+                        Read PDF
+                    </a>
+
+                    <button
+                        class="approve-btn"
+                        onclick="approvePaper('${paper.id}')"
+                    >
+                        Approve
+                    </button>
+
+                    <button
+                        class="reject-btn"
+                        onclick="rejectPaper('${paper.id}')"
+                    >
+                        Reject
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    });
+}
+
+/* APPROVE */
+
+async function approvePaper(id) {
+
+    try {
+
+        await pb.collection("papers")
+            .update(id, {
+
+                accepted: true
+            });
+
+        loadPapers();
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        alert("Failed to approve paper.");
+    }
+}
+
+/* REJECT */
+
+async function rejectPaper(id) {
+
+    const confirmDelete =
+        confirm("Reject and delete this paper?");
+
+    if (!confirmDelete) return;
+
+    try {
+
+        await pb.collection("papers")
+            .delete(id);
+
+        loadPapers();
+    }
+
+    catch(err) {
+
+        console.error(err);
+
+        alert("Failed to reject paper.");
+    }
+}
+
+/* START */
+
+loadPapers();
+
+</script>
+
+</body>
+
+</html>
