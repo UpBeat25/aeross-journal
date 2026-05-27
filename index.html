@@ -12,7 +12,7 @@
         <span class="hero-title" href="/index.html">Aeross Journal</span>
         <div class="btn-cont">
             <button class="search-btn"><span>About</span></button>
-            <button class="search-btn"><span>Publish</span></button>
+            <button class="search-btn" onclick="publish()"><span>Publish</span></button>
             <button class="search-btn" onclick="profile()"><span>Profile</span></button>
         </div>
     </div>
@@ -49,10 +49,10 @@
 
 <div class="row">
 <ul>
-<li><a href="#">Contact us</a></li>
-<li><a href="#">Publish With Us</a></li>
-<li><a href="#">Privacy Policy</a></li>
-<li><a href="#">Terms & Conditions</a></li>
+<li><a href="mailto:journal@aeross.org">Contact us</a></li>
+<li><a href="/pwu.html">Publish With Us</a></li>
+<li><a href="/pp.html">Privacy Policy</a></li>
+<li><a href="/tnc.html">Terms & Conditions</a></li>
 <li><a href="https://aeross.org">Website</a></li>
 </ul>
 </div>
@@ -149,6 +149,11 @@ AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K.
                 return;
             }
             window.location.href = `/profile.html?id=${user.id}`;
+        }
+
+        function publish(){
+            window.location.href = "/pwu.html"
+            return;
         }
     </script>
     <script src="main.js"></script>

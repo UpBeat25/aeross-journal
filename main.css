@@ -384,3 +384,26 @@ margin:0% 3%;
     filter: invert(1);
     transform: translate(4px, 4px);
 }
+
+.legal-page {
+    background-color: white;
+    margin: 40px auto;
+    padding: 40px;
+    width: 80%;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.legal-page h1 {
+    font-size: 3rem;
+    color: var(--red);
+}
+
+.legal-page h2 {
+    margin-top: 40px;
+    color: var(--red);
+}
+
+.legal-page ul {
+    padding-left: 30px;
+}

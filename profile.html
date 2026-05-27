@@ -37,13 +37,21 @@
         cursor: pointer;
         background-color: var(--red);
     }
+
+    #support {
+        width: 100px;
+        height: 40px;
+        color: white;
+        cursor: pointer;
+        background-color: black;
+    }
 </style>
 </head>
 
 <body>
-
-<div id="profile"></div>
-<br></br>
+<div id="profile">
+</div>
+<br>
 <div id="papers"></div>
 
 <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
@@ -82,17 +90,19 @@ async function loadProfile() {
                     : ""
                 }
                 <p id="orcid"><b>ORCID:</b> <a href="${user.orcid}">${user.orcid || ""}</a></p>
+                <button onclick="navigator.clipboard.writeText('${user.id}')"><p><b>Aeross Journal ID:</b> ${user.id || ""}</p></button>
                 <p id="dob"><b>Date of Birth:</b> ${user.birthdate
                     ? user.birthdate.split(" ")[0]
                     : ""}</p>
 
                 ${
-                    user_c.id === user.id
+                    user_c && user_c.id === user.id
                     ? `
                         <button onclick="logout()" id="logout">Logout</button>
                     `
                     : ""
                 }
+                <button id="support" onclick="window.location.href = 'mailto:journal@aeross.org'">Support</button>
             `;
 
         // Get papers where this user is an author
@@ -159,6 +169,15 @@ async function loadProfile() {
     catch(err) {
 
         console.error(err);
+        console.error("FULL ERROR:", err);
+
+        console.log("STATUS:", err.status);
+
+        console.log("DATA:", err.data);
+
+        console.log("RESPONSE:", err.response);
+
+        console.log("MESSAGE:", err.message);
 
         document.body.innerHTML += `
             <p>Error loading profile.</p>
@@ -168,9 +187,10 @@ async function loadProfile() {
 
 loadProfile();
 
-function logout() {
+async function logout() {
     pb.authStore.clear();
     window.location.href = "/login.html";
+    return;
 }
 </script>
 
