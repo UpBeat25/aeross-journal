@@ -67,8 +67,6 @@ async function loadPaper() {
                 expand: "authors"
             });
 
-        console.log(paper);
-
         let authorsHTML = "";
 
         if (paper.expand?.authors) {
@@ -132,8 +130,6 @@ async function loadPaper() {
     }
 
     catch(err) {
-
-        console.error(err);
 
         document.getElementById("paper")
             .innerHTML = `
