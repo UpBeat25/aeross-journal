@@ -78,6 +78,13 @@ async function loadProfile() {
             .innerHTML = `
 
                 <h1 id="name">${user.name}</h1>
+                ${
+                    user.aeross
+                    ? `
+                        <p><b>Aeross Member</b></p>
+                    `
+                    : ""
+                }
                 <p id="institute"><b>Institute:</b> ${user.institution || ""}</p>
                 ${
                     pb.authStore.isValid
@@ -167,17 +174,6 @@ async function loadProfile() {
     }
 
     catch(err) {
-
-        console.error(err);
-        console.error("FULL ERROR:", err);
-
-        console.log("STATUS:", err.status);
-
-        console.log("DATA:", err.data);
-
-        console.log("RESPONSE:", err.response);
-
-        console.log("MESSAGE:", err.message);
 
         document.body.innerHTML += `
             <p>Error loading profile.</p>
