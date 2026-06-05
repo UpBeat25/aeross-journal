@@ -5,9 +5,24 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <title>Aeross Journal</title>
     <link rel='stylesheet' href='main.css'>
+    <link rel='stylesheet' href='style_mobile.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .mobile {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .desktop {
+                display: none;
+            }
+            .mobile {
+                display: contents;
+            }
+        }
+    </style>
 </head>
 <body>
+<div class="desktop">
     <div class="nav-bar">
         <span class="hero-title" href="/index.html">Aeross Journal</span>
         <div class="btn-cont">
@@ -39,34 +54,90 @@
     </article>
 
     <footer>
-<div class="footer">
-<div class="row">
-        <div class="img">
-            <img src="images/hijhik.png" id="light"/>
-            <img src="images/hijhik.png" id="dark"/>
+        <div class="footer">
+            <div class="row">
+                <div class="img">
+                    <img src="images/hijhik.png" id="light"/>
+                    <img src="images/hijhik.png" id="dark"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <ul>
+                    <li><a href="mailto:journal@aeross.org">Contact us</a></li>
+                    <li><a href="/pwu.html">Publish With Us</a></li>
+                    <li><a href="/pp.html">Privacy Policy</a></li>
+                    <li><a href="/tnc.html">Terms & Conditions</a></li>
+                    <li><a href="https://aeross.org">Website</a></li>
+                </ul>
+            </div>
+
+            <div class="row">
+            AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K. Puram
+            </div>
         </div>
+    </footer>
 </div>
+<div class="mobile">
+    <div class="nav-bar">
+        <span class="hero-title" href="/index.html">Aeross Journal</span>
+        <div class="btn-cont">
+            <button class="search-btn" onclick="about()"><span>About</span></button>
+            <button class="search-btn" onclick="publish()"><span>Publish</span></button>
+            <button class="search-btn" onclick="profile()"><span>Profile</span></button>
+        </div>
+    </div>
+    
+    <article class="art-week" id="art-week-mobile">
+        <div class="art-content">
+            <span class="title week-art">Article Of The Week</span>
+            <span id="art-week-title-mobile"></span>
+            <p id="art-week-desc-mobile"></p>
+        </div>
+    </article>
+    
+    <article class="genre">
+        
+        <div class="choose-genre">
+            <span class="title">Choose Your Topic</span>
+            <input type="text" id="searchBox-mobile" placeholder="Search subjects..." autocomplete="off">
+            <div class="suggestions" id="suggestions-mobile"></div>
+        </div>
+    </article>
 
-<div class="row">
-<ul>
-<li><a href="mailto:journal@aeross.org">Contact us</a></li>
-<li><a href="/pwu.html">Publish With Us</a></li>
-<li><a href="/pp.html">Privacy Policy</a></li>
-<li><a href="/tnc.html">Terms & Conditions</a></li>
-<li><a href="https://aeross.org">Website</a></li>
-</ul>
-</div>
+    <footer>
+        <div class="footer">
+            <div class="row">
+                <div class="img">
+                    <img src="images/hijhik.png" id="light"/>
+                    <img src="images/hijhik.png" id="dark"/>
+                </div>
+            </div>
 
-<div class="row">
-AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K. Puram
+            <div class="row">
+                <ul>
+                    <li><a href="mailto:journal@aeross.org">Contact us</a></li>
+                    <li><a href="/pwu.html">Publish With Us</a></li>
+                    <li><a href="/pp.html">Privacy Policy</a></li>
+                    <li><a href="/tnc.html">Terms & Conditions</a></li>
+                    <li><a href="https://aeross.org">Website</a></li>
+                </ul>
+            </div>
+
+            <div class="bot-tex row">
+                AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K. Puram
+            </div>
+        </div>
+    </footer>
 </div>
-</div>
-</footer>
     <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
     <script src="main.js"></script>
     <script>
         const art_week_desc = document.getElementById("art-week-desc");
         const art_week_title = document.getElementById("art-week-title");
+
+        const art_week_desc_mobile = document.getElementById("art-week-desc-mobile");
+        const art_week_title_mobile = document.getElementById("art-week-title-mobile");
         const articleId = "wlh8zxp8eg7tfz3";
 
         async function loadArticleOfWeek() {
@@ -85,6 +156,13 @@ AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K.
 
                 art_week_desc.innerText =
                     paper.abstract || "";
+
+                
+                if (art_week_title_mobile)
+                    art_week_title_mobile.innerText = paper.title;
+
+                if (art_week_desc_mobile)
+                    art_week_desc_mobile.innerText = paper.abstract || "";
             }
 
             catch(err) {
@@ -95,48 +173,58 @@ AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K.
 
         loadArticleOfWeek();
 
-        const art_week = document.getElementById("art-week");
-        art_week.addEventListener("click", () => {
-            window.location.href =
-            `/paper.html?id=${articleId}`;
+        document.getElementById("art-week")
+        ?.addEventListener("click", () => {
+            window.location.href = `/paper.html?id=${articleId}`;
+        });
+
+        document.getElementById("art-week-mobile")
+        ?.addEventListener("click", () => {
+            window.location.href = `/paper.html?id=${articleId}`;
         });
         // Search options
 
         const searchBox = document.getElementById("searchBox");
         const suggestions = document.getElementById("suggestions");
 
-        searchBox.addEventListener("input", () => {
+        const searchBoxMobile =
+            document.getElementById("searchBox-mobile");
 
-            const value = searchBox.value.toLowerCase();
+        const suggestionsMobile =
+            document.getElementById("suggestions-mobile");
 
-            suggestions.innerHTML = "";
+        function setupSearch(searchBox, suggestions) {
 
-            if (value === "") return;
+            searchBox.addEventListener("input", () => {
 
-            const matches = options.filter(item =>
-                item.toLowerCase().includes(value)
-            );
+                const value = searchBox.value.toLowerCase();
 
-            matches.forEach(match => {
+                suggestions.innerHTML = "";
 
-                const div = document.createElement("div");
+                if (value === "") return;
 
-                div.classList.add("suggestion-item");
-                div.textContent = match;
+                const matches = options.filter(item =>
+                    item.toLowerCase().includes(value)
+                );
 
-                div.addEventListener("click", () => {
+                matches.forEach(match => {
 
-                    // Redirect with query parameter
-                    window.location.href =
-                        `/search.html?sub=${encodeURIComponent(match)}`;
+                    const div = document.createElement("div");
 
+                    div.classList.add("suggestion-item");
+                    div.textContent = match;
+
+                    div.addEventListener("click", () => {
+
+                        window.location.href =
+                            `/search.html?sub=${encodeURIComponent(match)}`;
+
+                    });
+
+                    suggestions.appendChild(div);
                 });
-
-                suggestions.appendChild(div);
-
             });
-
-        });
+        }
 
         async function profile() {
             const user = pb.authStore.model;
@@ -159,6 +247,9 @@ AEROSS Copyright © 2025 Aeross - All rights reserved | Delhi Public School R.K.
             window.location.href = "/about.html"
             return;
         }
+
+        setupSearch(searchBox, suggestions);
+        setupSearch(searchBoxMobile, suggestionsMobile);
     </script>
     <script src="main.js"></script>
 </body>

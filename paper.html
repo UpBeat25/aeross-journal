@@ -32,7 +32,16 @@
     .abstract {
         text-align: justify;
     }
-    
+
+    @media (max-width: 768px) {
+        
+        body {
+            font-size: 3rem;
+        }
+        .paper-title {
+            font-size: 4rem;
+        }
+    }
 </style>
 </head>
 
@@ -130,6 +139,8 @@ async function loadPaper() {
     }
 
     catch(err) {
+
+        console.error(err);
 
         document.getElementById("paper")
             .innerHTML = `
