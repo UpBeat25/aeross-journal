@@ -222,5 +222,7 @@ const options = [
     "Science Communication",
     "Research Methodology",
     "Innovation",
-    "STEM Education"
+    "STEM Education",
+    "Music Theory",
+    "Literature"
 ];
