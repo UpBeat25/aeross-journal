@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account</title>
     <link rel="stylesheet" href="main.css">
+    <link rel='stylesheet' href='style_mobile.css'>
 <style>
     body {
         padding: 40px;
@@ -46,12 +47,15 @@
         <input type="password" name="password" placeholder="Password (8 characters or more)" required>
         <br>
         <!-- Birthdate Field -->
-        <input type="date" name="birthdate" required>
+        <input type="date" name="birthdate" placeholder="Date of Birth" required>
         <br>
         <input type="text" name="institution" placeholder="Institution" required>
         <br>
         <input type="text" name="orcid" placeholder="ORCID (0000-0000-0000-0000)" pattern="^\d{4}-\d{4}-\d{4}-\d{4}$" required>
         <p>Please ensure you include the hyphens while entering your ORCID</p>
+        <br>
+        <input type="text" id="searchBox" name="searchBox" placeholder="Search subjects..." autocomplete="off">
+        <div class="suggestions" id="suggestions"></div>
         <br>
         <button type="submit">Create Account</button>
 
@@ -66,6 +70,40 @@
 <script>
 const form = document.getElementById("signupForm");
 
+const searchBox = document.getElementById("searchBox");
+const suggestions = document.getElementById("suggestions");
+        function setupSearch(searchBox, suggestions) {
+
+            searchBox.addEventListener("input", () => {
+                suggestions.style.display = "block";
+                const value = searchBox.value.toLowerCase();
+
+                suggestions.innerHTML = "";
+
+                if (value === "") return;
+
+                const matches = options.filter(item =>
+                    item.toLowerCase().includes(value)
+                );
+
+                matches.forEach(match => {
+
+                    const div = document.createElement("div");
+
+                    div.classList.add("suggestion-item");
+                    div.textContent = match;
+
+                    div.addEventListener("click", () => {
+                        searchBox.value = match;
+                        suggestions.style.display = "none";
+                    });
+
+                    suggestions.appendChild(div);
+                });
+            });
+        }
+
+setupSearch(searchBox, suggestions);
 form.addEventListener("submit", async (e) => {
 
     e.preventDefault();
@@ -88,7 +126,9 @@ form.addEventListener("submit", async (e) => {
 
             institution: form.institution.value,
 
-            orcid: form.orcid.value
+            orcid: form.orcid.value,
+
+            primary_field: form.searchBox.value,
         });
 
         await pb.collection("users")

@@ -96,6 +96,18 @@ async function loadProfile() {
                     `
                     : ""
                 }
+                
+                ${
+                    user_c && user_c.id !== user.id
+                    ? `
+                        <p id="field"><b>Primary Field:</b> ${user.primary_field || ""}</p>
+                    `
+                    : `
+                        <b>Primary Field:</b> 
+                        <input type="text" id="searchBox" name="searchBox" placeholder="Search subjects..." autocomplete="off" value=${user.primary_field}>
+                        <div class="suggestions" id="suggestions"></div>
+                    `
+                }
                 <p id="orcid"><b>ORCID:</b> <a href="https://orcid.org/${user.orcid}">${user.orcid || ""}</a></p>
                 <button onclick="navigator.clipboard.writeText('${user.id}')"><p><b>Aeross Journal ID:</b> ${user.id || ""}</p></button>
                 <p id="dob"><b>Date of Birth:</b> ${user.birthdate
@@ -111,7 +123,10 @@ async function loadProfile() {
                 }
                 <button id="support" onclick="window.location.href = 'mailto:journal@aeross.org'">Support</button>
             `;
+        const searchBox = document.getElementById("searchBox");
+        const suggestions = document.getElementById("suggestions");
 
+        setupSearch(searchBox, suggestions);
         // Get papers where this user is an author
         const papers =
             await pb.collection("papers")
@@ -183,11 +198,45 @@ async function loadProfile() {
 
 loadProfile();
 
+        async function setupSearch(searchBox, suggestions) {
+
+            searchBox.addEventListener("input", () => {
+                suggestions.style.display = "block";
+                const value = searchBox.value.toLowerCase();
+
+                suggestions.innerHTML = "";
+
+                if (value === "") return;
+
+                const matches = options.filter(item =>
+                    item.toLowerCase().includes(value)
+                );
+
+                matches.forEach(match => {
+
+                    const div = document.createElement("div");
+
+                    div.classList.add("suggestion-item");
+                    div.textContent = match;
+
+                    div.addEventListener("click", () => {
+                        searchBox.value = match;
+                        suggestions.style.display = "none";
+                        pb.collection('users').update(user_c.id, {
+				            primary_field: match
+                        })
+                    });
+
+                    suggestions.appendChild(div);
+                });
+            });
+        }
 async function logout() {
     pb.authStore.clear();
     window.location.href = "/login.html";
     return;
 }
+
 </script>
 
 </body>
