@@ -1,6 +1,6 @@
 
 :root {
-    --red: rgb(63, 0, 0);
+    --red: #d6a828; /*#fdc42d*/
 }
 body {
     overflow-x: hidden;
@@ -296,13 +296,13 @@ align-items: center;
 
 .footer .row a{
 text-decoration:none;
-color:gray;
+color:#fff;
 transition:0.5s;
 margin: 0 12px;
 }
 
 .footer .row a:hover{
-color:#fff;
+color: gray;
 }
 
 .footer .row ul{
@@ -419,5 +419,5 @@ margin:0% 3%;
 }
 
 a {
-    color: var(--red);
+    color: black;
 }

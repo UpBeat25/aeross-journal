@@ -1,5 +1,10 @@
 const pb = new PocketBase("https://testing.helplink.dev");
+const link = document.createElement("link");
+link.rel = "icon";
+link.type = "image/png";
+link.href = "/images/favi.png";
 
+document.head.appendChild(link);
 const options = [
     // Engineering
     "Engineering",
