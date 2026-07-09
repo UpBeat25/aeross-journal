@@ -37,8 +37,6 @@
             <span class="title week-art">Article Of The Week</span>
 
             <span id="art-week-title"></span>
-        </div>
-        <div class="art-image">
             
             <p id="art-week-desc">
             </p>
@@ -151,18 +149,24 @@
                         expand: "authors"
                     });
 
-                art_week_title.innerText =
-                    paper.title;
+                const abstract = String(paper.abstract || "");
 
-                art_week_desc.innerText =
-                    paper.abstract || "";
+                art_week_title.innerText = paper.title;
+
+                art_week_desc.innerHTML =
+                    abstract.length > 650
+                        ? abstract.slice(0, 650) + "<b>... Read More</b>"
+                        : abstract;
 
                 
                 if (art_week_title_mobile)
                     art_week_title_mobile.innerText = paper.title;
 
                 if (art_week_desc_mobile)
-                    art_week_desc_mobile.innerText = paper.abstract || "";
+                    art_week_desc_mobile.innerHTML =
+                        abstract.length > 650
+                            ? abstract.slice(0, 650) + "<b>... Read More</b>"
+                            : abstract;
             }
 
             catch(err) {

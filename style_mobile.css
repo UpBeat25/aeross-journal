@@ -21,7 +21,7 @@ body {
 }
 .hero-title {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: 25px;
+    font-size: calc(100vw / 20);
     background-color: rgb(255, 255, 255);
     padding: 5px;
     color: rgb(0, 0, 0);
@@ -58,7 +58,7 @@ body {
 
 .art-week {
     height: max-content;
-    background-color: rgba(255, 255, 255, 0.925);
+    background-color: rgb(255, 255, 255);
     margin: 10px;
     margin-top: 10px;
     display: flex;
@@ -106,19 +106,23 @@ body {
 }
 
 .genre {
-    width: 96vw;
+    width: fit-content;
+    margin-right: 0px;
     height: auto;
     margin: 10px;
     position: relative;
     z-index: 3;
     display: flex;
     padding: 5px;
-    padding-right: 10px;
     align-items: center;
 
+    .title {
+        color:#000000;
+    }
     #searchBox-mobile {
         padding-top: 10px;
-        width: 90vw;
+        width: 87vw;
+        border: 2px black solid;
     }
 
     hr {
@@ -149,11 +153,14 @@ body {
     .suggestion-item {
         padding: 10px;
         cursor: pointer;
+        border-bottom: 1px black solid;
     }
 
     .suggestion-item:hover {
-        background: #f0f0f0;
+        background: var(--red);
+        color: #ffffff;
     }
+
     input {
         width: 74vw;
         padding: 10px;
@@ -164,9 +171,34 @@ body {
 
 }
 
+.genrens { 
+    .suggestions {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        border-top: none;
+        max-height: 200px;
+        overflow-y: auto;
+        width: 74vw;
+    }
+
+    .suggestion-item {
+        padding: 10px;
+        cursor: pointer;
+        border-bottom: 1px black solid;
+    }
+
+    .suggestion-item:hover {
+        background: var(--red);
+        color: #ffffff;
+    }
+}
+
 #art-week-title-mobile {
     font-size: 2rem;
     color: #000000;
+    text-decoration: none;
+    text-align: left;
 }
 
 .title {

@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="main.css">
 
@@ -76,7 +78,7 @@ async function loadProfile() {
         // Render profile
         document.getElementById("profile")
             .innerHTML = `
-
+                <a href="/index.html">Back to Home Page</a>
                 <h1 id="name">${user.name}</h1>
                 ${
                     user.aeross
@@ -104,7 +106,7 @@ async function loadProfile() {
                     `
                     : `
                         <b>Primary Field:</b> 
-                        <input type="text" id="searchBox" name="searchBox" placeholder="Search subjects..." autocomplete="off" value=${user.primary_field}>
+                        <input type="text" id="searchBox" name="searchBox" placeholder="Search subjects..." autocomplete="off" value="${user.primary_field}">
                         <div class="suggestions" id="suggestions"></div>
                     `
                 }
@@ -178,7 +180,9 @@ async function loadProfile() {
                             ${authorsHTML}
                         </div>
 
-                        <p class="abstract"><b>Abstract:</b> ${paper.abstract || ""}</p>
+                        <p class="abstract"><b>Abstract:</b> ${paper.abstract.length > 650
+                        ? paper.abstract.slice(0, 650) + "<b>... Read More</b>"
+                        : paper.abstract}</p>
 
                         <p><b>Field:</b> ${paper.field || ""}</p>
 

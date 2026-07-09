@@ -14,12 +14,12 @@
         padding: 30px;
     }
     input {
-        width: 250px;
+        width: 100%;
         height: 30px;
         margin-bottom: 30px;
     }
     button {
-        width: 250px;
+        width: 100%;
         height: 30px; 
         background-color: var(--red);
         color: white;
@@ -42,6 +42,7 @@
         <input type="email" name="email" placeholder="Email" required>
         <br>
         <input type="password" name="password" placeholder="Password" required>
+        <p onclick="reset()">Forgot Password?</p>
         <br>
         <button type="submit">Login</button>
 
@@ -53,8 +54,28 @@
 <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script src="main.js"></script>
 <script>
+
 const form = document.getElementById("loginForm");
 
+async function reset() {
+
+    const email = form.email.value.trim();
+
+    if (!email) {
+        alert("Please enter your email address first.");
+        return;
+    }
+
+    try {
+        await pb.collection("users").requestPasswordReset(email);
+
+        alert("If an account with that email exists, a password reset email has been sent.");
+
+    } catch (err) {
+        console.error(err);
+        alert("Unable to send password reset email.");
+    }
+}
 form.addEventListener("submit", async (e) => {
 
     e.preventDefault();

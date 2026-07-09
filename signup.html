@@ -15,12 +15,12 @@
         padding: 30px;
     }
     input {
-        width: 250px;
+        width: 100%;
         height: 30px;
         margin-bottom: 30px;
     }
     button {
-        width: 250px;
+        width: 100%;
         height: 35px; 
         background-color: var(--red);
         color: white;
@@ -39,23 +39,30 @@
     <h1>Create Account</h1>
 
     <form id="signupForm">
-
+        <b>Full Name</b>
         <input type="text" name="name" placeholder="Name" required>
         <br>
+        <b>Email</b>
         <input type="email" name="email" placeholder="Email" required>
         <br>
+        <b>Password</b>
         <input type="password" name="password" placeholder="Password (8 characters or more)" required>
         <br>
         <!-- Birthdate Field -->
+        <b>Date of Birth</b>
         <input type="date" name="birthdate" placeholder="Date of Birth" required>
         <br>
+        <b>Name of Institution</b>
         <input type="text" name="institution" placeholder="Institution" required>
         <br>
+        <b>ORCID - </b><i>Please ensure you include the hyphens while entering your ORCID</i>
         <input type="text" name="orcid" placeholder="ORCID (0000-0000-0000-0000)" pattern="^\d{4}-\d{4}-\d{4}-\d{4}$" required>
-        <p>Please ensure you include the hyphens while entering your ORCID</p>
         <br>
-        <input type="text" id="searchBox" name="searchBox" placeholder="Search subjects..." autocomplete="off">
-        <div class="suggestions" id="suggestions"></div>
+        <b>Primary Field of Study</b>
+        <div class="genrens">
+            <input type="text" id="searchBox" name="searchBox" placeholder="Search subjects..." autocomplete="off">
+            <div class="suggestions" id="suggestions"></div>
+        </div>
         <br>
         <button type="submit">Create Account</button>
 
