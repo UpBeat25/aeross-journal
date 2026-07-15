@@ -315,7 +315,12 @@ input[type="file"] {
 <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script src="main.js"></script>
 <script>
-
+try {
+    await pb.collection("users").authRefresh();
+} catch (e) {
+    pb.authStore.clear();
+    window.location.href = "/login.html";
+}
 const searchBox =
     document.getElementById("searchBox");
 
