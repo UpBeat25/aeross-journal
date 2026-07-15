@@ -19,6 +19,7 @@
     .paper-card {
         background-color: white;
         padding: 40px;
+        margin-bottom: 20px;
     }
 
     .paper-title {
@@ -96,7 +97,7 @@ async function loadProfile() {
                 }
                 
                 ${
-                    user_c && user_c.id !== user.id
+                    user_c.id !== user.id
                     ? `
                         <p id="field"><b>Primary Field:</b> ${user.primary_field || ""}</p>
                     `
@@ -154,7 +155,7 @@ async function loadProfile() {
                     authorsHTML += `
                         <a href="profile.html?id=${author.id}">
                             ${author.name}
-                        </a>
+                        </a>, 
                     `;
                 });
             }

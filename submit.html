@@ -314,13 +314,18 @@ input[type="file"] {
 </div>
 <script src="https://unpkg.com/pocketbase/dist/pocketbase.umd.js"></script>
 <script src="main.js"></script>
-<script>
+<script type="module">
+if (!pb.authStore.isValid) {
+    window.location.href = "/login.html";
+}
+
 try {
     await pb.collection("users").authRefresh();
-} catch (e) {
+} catch (err) {
     pb.authStore.clear();
     window.location.href = "/login.html";
 }
+
 const searchBox =
     document.getElementById("searchBox");
 
@@ -406,9 +411,6 @@ searchBox.addEventListener("change", () => {
     hiddenField.value =
         searchBox.value;
 });
-
-</script>
-<script>
 
 const authorsContainer =
     document.getElementById("authorsContainer");

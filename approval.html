@@ -229,11 +229,9 @@ function renderPapers(papers) {
             paper.expand.authors.forEach(author => {
 
                 authorsHTML += `
-
                     <a href="profile.html?id=${author.id}">
                         ${author.name}
-                    </a>
-
+                    </a>, 
                 `;
             });
         }
